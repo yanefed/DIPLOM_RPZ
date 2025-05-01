@@ -1,0 +1,46 @@
+
+\section{Тестирование триггера}
+В соответствии со схемой алгоритма триггера, указанной на~\ref{fig:trigger}, алгоритм включает проверку наличия уже существующего отчета для самолета Х в таблице reports.
+Для целей тестирования, значение, на которое уменьшается коэффициент, было заменено с random() на 10.
+
+В таблице~\ref{tab:tabl10} представлены модульные тесты для триггера базы данных.
+\begin{table}[H]
+    \centering
+    \captionsetup{justification=raggedright}
+    \caption{Модульное тестирование триггера базы данных (ч. 1)}
+    \begin{tabular}{|c|p{0.3\textwidth}|p{0.3\textwidth}|p{0.2\textwidth}|}
+        \hline
+        № & Класс \newline эквивалентности & Запрос для теста & Результат \\
+        \hline
+        1 & Вставка первого \newline отчета для самолета N10156 в таблицу reports с k\_coeff = 100 & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10156', 100, `true', `2024-06-09 00:54:53'); & k\_coeff = 90 \\
+        \hline
+    \end{tabular}
+    \label{tab:tabl10}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \captionsetup{justification=raggedright}
+    \caption{Модульное тестирование триггера базы данных (ч. 2)}
+    \begin{tabular}{|c|p{0.3\textwidth}|p{0.3\textwidth}|p{0.2\textwidth}|}
+        \hline
+        № & Класс \newline эквивалентности & Запрос для теста & Результат \\
+        \hline
+        2 & Вставка второго \newline отчета для самолета N10156 в таблицу reports с k\_coeff = 90 & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10156', 100, `true', `2024-06-09 01:54:53'); & k\_coeff = 80 \\
+        \hline
+        3 & Вставка третьего отчета для самолета N10156 в таблицу reports с k\_coeff = 80 & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10156', 100, `true', `2024-06-09 02:54:53'); & k\_coeff = 70 \\
+        \hline
+        4 & Вставка отчета для \newline самолета N10156 в таблицу reports с \newline k\_coeff = 0 & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10156', 100, `true', `2024-06-09 02:54:53'); & k\_coeff = 0 \\
+        \hline
+        5 & Вставка отчета для несуществующего самолета в таблицу reports & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10157', 100, `true', `2024-06-09 02:54:53'); & Ошибка: данный самолет не существует \\
+        \hline
+        6 & Вставка отчета для \newline существующего \newline самолета в таблицу reports с \newline некорректными \newline данными & INSERT INTO reports (tail\_num, avg\_rate, decision, datetime) VALUES ('N10156', 100, `true', `2024-06-09 02:54:53'); & Ошибка: некорректные данные \\
+        \hline
+    \end{tabular}
+    \label{tab:tabl11}
+\end{table}
+
+В процессе тестирования были выполнены запросы, указанные в~\ref{tab:tabl10}.
+После их выполнения, в случае успешного завершения, проводилась проверка соответствия текущего состояния кортежа ожидаемому, и получалось сообщение, соответствующее таблице.
+Если ожидался неудачный исход, проверялось наличие сообщения об ошибке, соответствующего таблице, и состояние кортежа должно было соответствовать его предыдущему состоянию.

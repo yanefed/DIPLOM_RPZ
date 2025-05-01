@@ -1,0 +1,159 @@
+\chapter{Технологический раздел}
+%В этом разделе осуществляется выбор инструментов для реализации, предоставляется описание классов программы и интерфейс программного обеспечения.
+
+
+\section{Технологии, используемые при создании ПО}
+\section{Архитектура ПО}
+\section{Реализация триггера}
+\section{Реализация системы ролей}
+\section{Примеры работы}
+
+%\section{Требования к программному обеспечению}
+%
+%Программа должна иметь графический интерфейс, предоставляющий следующий функционал:
+%\begin{itemize}[label=---]
+%    \item изменение положения модели многогранника в пространстве;
+%    \item регулировка положения камеры и направления её обзора в пространстве.
+%\end{itemize}
+%
+%Разработанное программное обеспечение должно соответствовать следующим требованиям:
+%\begin{itemize}[label=---]
+%    \item источник света создаётся при запуске программы;
+%    \item допускается наличие только одной камеры в пространстве.
+%\end{itemize}
+%
+%\section{Средства реализации программного обеспечения}
+%Для выполнения данного курсового проекта был выбран язык программирования Python. Этот выбор обоснован следующими причинами:
+%\begin{itemize}[label=---]
+%	\item имеется опыт разработки на этом языке;
+%	\item Python поддерживает объектно-ориентированный подход к разработке, что позволяет структурировать программу и создавать качественное программное обеспечение;
+%	\item Python обладает широким выбором различных библиотек, которые могут помочь в реализации данного программного обеспечения.
+%\end{itemize}
+%
+%В качестве среды разработки была выбрана PyCharm по следующим причинам:
+%\begin{itemize}[label=---]
+%	\item в данной среде присутстввуют встроенный отладчик, инструменты для работы с Git, а также средства для навигации по коду, автодополнения кода и контекстной подсказки.
+%\end{itemize}
+%
+%\section{Диаграмма классов}
+%
+%На рисунке~\ref{fig:class_diagram} изображена диаграмма классов, использующихся в программе.
+%\begin{itemize}[label=---]
+%	\item SoftwareRender -- класс оконного интерфейса;
+%	\item Scene -- класс, использующийся для визуализации сцены;
+%	\item Light -- класс точечного источника света;
+%	\item Point -- класс геометрической точки;
+%	\item Mesh -- класс отображаемого объекта;
+%	\item Camera -- класс, хранящий информацию о камере;
+%	\item Matrix -- класс матрицы;
+%	\item Vector3 -- класс трехмерного вектора;
+%	\item Tools -- файл с вспомогательными функциями;
+%	\item Event -- файл с функциями для обработки внешних сигналов.
+%\end{itemize}
+%
+%\FloatBarrier
+%\begin{figure}[h]
+%	\begin{center}
+%		\includegraphics[scale=0.9]{inc/class_diagram}
+%		\caption{Диаграмма классов}
+%		\label{fig:class_diagram}
+%	\end{center}
+%\end{figure}
+%\FloatBarrier
+%
+%\section{Интерфейс программы}
+%
+%На рисунке~\ref{fig:interface} демонстрируется интерфейс программы.
+%\FloatBarrier
+%\begin{figure}[h]
+%	\begin{center}
+%		\includegraphics[scale=0.5]{inc/interface}
+%		\caption{Интерфейс программы}
+%		\label{fig:interface}
+%	\end{center}
+%\end{figure}
+%\FloatBarrier
+%
+%Для взаимодействия с освещением объекта на сцене используется позиция курсора мыши на экране.
+%Для управления камерой используются следующие клавиши:
+%\begin{itemize}[label=---]
+%	\item $\uparrow$ -- наклон вверх;
+%	\item $\downarrow$ -- наклон вниз;
+%	\item $\rightarrow$ -- поворот вправо;
+%	\item $\leftarrow$ -- поворот влево;
+%	\item $W$ -- перемещение вперед;
+%	\item $A$ -- перемещение влево;
+%	\item $S$ -- перемещение назад;
+%	\item $D$ -- перемещение вправо.
+%\end{itemize}
+%
+%
+%\section{Реализация алгоритмов}
+%
+%В листингах 3.1 -- 3.2 представлены реализации рассматриваемых алгоритмов.
+%
+%\begin{lstlisting}[caption=Реализация алгоритма художника]
+%	def update(self, dt, camera, light, screen, showAxis=False, fill=True,
+%               wireframe=False, vertices=False, depth=True,
+%               clippingDebug=False, showNormals=False, radius=2,
+%               verticeColor=False, wireframeColor=(255, 255, 255),
+%               ChangingColor=0, lineWidth=1):
+%    camera.HandleInput(dt)
+%    camera.direction = vector.Vector3(0, 0, 1)
+%    camera.up = vector.Vector3(0, 1, 0)
+%    camera.target = vector.Vector3(0, 0, 1)
+%    camera.rotation = matrix.Matrix.rotation_x(camera.yaw)
+%    camera.direction = matrix.multiplyMatrixVector(camera.target, camera.rotation)
+%    camera.target = camera.position + camera.direction
+%    lookAtMatrix = PointAt(camera.position,
+%    camera.target, camera.up)
+%    camera.viewMatrix = QuickInverse(lookAtMatrix)
+%    camera.target = Vector3(0, 0, 1)
+%
+%    triangles = []
+%    origins = []
+%    for ob in self.world:
+%        triangles += ob.update(screen, fill, wireframe, dt, camera, light, depth, clippingDebug, ChangingColor)
+%
+%    triangles.sort(key=lambda val: (val.vertex1.z + val.vertex2.z + val.vertex3.z) / 3.0)
+%
+%    normals_length = 250
+%    normals = []
+%
+%    for projected in reversed(triangles):
+%        origin = (projected.vertex1 + projected.vertex2 + projected.vertex3) / 3
+%        line1 = projected.vertex2 - projected.vertex1
+%        line2 = projected.vertex3 - projected.vertex1
+%        normal = crossProduct(line1, line2) * normals_length
+%        DrawTriangle(screen, projected, fill, wireframe, vertices, radius, verticeColor, wireframeColor, lineWidth)
+%        origins.append(origin)
+%        normals.append(normal)
+%
+%    if showAxis:
+%        DrawAxis(screen, camera)
+%
+%    if showNormals:
+%        # get the normal vectors
+%        for i, n in enumerate(normals):
+%            endPoint = origins[i] + (n)
+%            pygame.draw.line(
+%                screen, (0, 255, 0), origins[i].GetTuple(), endPoint.GetTuple(), 2
+%            )
+%\end{lstlisting}
+%
+%\begin{lstlisting}[caption=Реализация алгоритма однотонной закраски]
+%    def compute_color_component(color):
+%        color_val = color * val
+%        color_val = min(255, color_val)
+%        color_val = max(0, color_val)
+%        return int(color_val)
+%    r = compute_color_component(self.color[0])
+%    g = compute_color_component(self.color[1])
+%    b = compute_color_component(self.color[2])
+%\end{lstlisting}
+%
+%%\addcontentsline{toc}{section}{Выводы}
+%\section*{Выводы}
+%
+%В этом разделе был произведен выбор языка программирования и определен набор инструментов для реализации данного программного обеспечения.
+%Также, были описаны диаграмма классов и способы взаимодействия с программой.

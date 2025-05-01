@@ -1,0 +1,31 @@
+\documentclass{bmstu}
+\bibliography{biblio}
+\usepackage{pdfpages}
+
+%\usepackage[backend=biber]
+
+\begin{document}
+    \makeresearchtitle
+    {Информатика, искусственный интеллект и системы управления} % #1 Название факультета
+    {Программное обеспечение ЭВМ и информационные технологии} % Название кафедры
+    {Решения задачи регрессии} % Тема работы
+    {Й.~Н.~Везирова/ИУ7И-71Б} % #7 Автор
+    {Ю.~В.~Строганов} % ФИО научного руководителя
+    {} % ФИО консультанта (необязательный аргумент; если консультантов несколько, их необходимо разделить запятой)
+
+    \setcounter{page}{3}
+
+    \include{02-essay}
+
+    \maketableofcontents
+
+    \include{03-introduction}
+    \include{04-chapter}
+    \include{05-chapter}
+    \include{08-conclusion}
+
+    \makebibliography
+
+    \include{09-appendix}
+    \includepdf[pages=-, angle=90]{prez.pdf}
+\end{document}

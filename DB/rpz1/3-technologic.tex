@@ -1,0 +1,83 @@
+\chapter{Технологический раздел}
+
+\section{Технологии, используемые при создании ПО}
+
+Для выполнения данной курсовой работы был выбран язык \newline $Python$~\cite{python-lang}.
+
+Для взаимодействия с базами данных в объектно--ориентированной парадигме было выбрано $SQLAlchemy$~\cite{sqlalchemy}.
+
+Для работы с базой данных была выбрана СУБД $PostgreSQL$~\cite{postgresql}.
+
+\section{Архитектура ПО}
+
+В процессе разработки были реализованы следующие структуры:
+\begin{enumerate}[label=\arabic*)]
+    \item Flight --- описывает информацию о полете;
+    \item Delay --- описывает информацию о задержке;
+    \item Airport --- описывает информацию об аэропорте;
+    \item Airline --- описывает информацию об авиакомпании;
+    \item Plane --- описывает информацию о самолете;
+    \item Crew --- описывает информацию о членах экипажа;
+    \item Report --- описывает информацию о отчетах;
+    \item System --- описывает информацию о системах;
+\end{enumerate}
+
+Также была создана функция, проверяющая наличие необходимой роли у пользователя для выполнения отправленного запроса.
+
+\section{Реализация триггера}
+
+В листинге~\ref{lst:trigger} представлен триггер для обновления данных в таблице system при добавлении нового отчета о самолете в таблицу report.
+
+\begin{lstlisting}[language=SQL, label=lst:trigger, caption=Триггер для обновления данных в таблице system]
+def create_trigger(db: Session):
+    sql = """
+    CREATE OR REPLACE FUNCTION decrease_k_coeff() RETURNS TRIGGER AS $$
+    BEGIN
+    UPDATE systems
+    SET k_coeff = k_coeff - (random() * 10)
+    WHERE plane = NEW.plane;
+    RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER decrease_k_coeff_trigger
+    AFTER INSERT ON reports
+    FOR EACH ROW EXECUTE FUNCTION decrease_k_coeff();
+    """
+    db.execute(text(sql))
+\end{lstlisting}
+
+\section{Реализация хранимой процедуры}
+В листинге~\ref{lst:procedure} представлена хранимая процедура для получения вероятности задержки рейса.
+
+\begin{lstlisting}[language=SQL, label=lst:procedure, caption=Хранимая процедура для получения вероятности задержки рейса]
+    .........
+\end{lstlisting}
+
+\section{Реализация системы ролей}
+
+В листинге~\ref{lst:roles} представлен код создания ролей в системе, в котором выдаются права на определенные таблицы в базе данных.
+
+\begin{lstlisting}[language=SQL, label=lst:roles, caption=Создание ролей в системе]
+
+    CREATE ROLE admin;
+    CREATE ROLE user;
+    CREATE ROLE guest;
+
+
+\end{lstlisting}
+
+\section{Примеры работы}
+
+Для примера работы информационной системы были выполнены следующие запросы:
+\begin{itemize}
+    \item авторизация сотрудника;
+    \item получение информации о полете;
+    \item получение информации о вероятности задержки полета;
+    \item добавление администратором новой записи в таблицу полетов;
+    \item добавление сотрудником новой записи в таблицу отчетов;
+    \item попытка добавления новой записи в таблицу аэропортов гостем;
+\end{itemize}
+
+%TODO - добавить примеры работы, хранимой процедуры
+%На рисунках~\ref{fig:auth},~\ref{fig:flight},~\ref{fig:delay},~\ref{fig:add_flight},~\ref{fig:add_report},~\ref{fig:add_airport} представлены примеры работы информационной системы.
